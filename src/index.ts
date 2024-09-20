@@ -52,6 +52,7 @@ app.post("/botalert", async (req, res, next) => {
   console.log(req.body)
 
   bot.api.sendMessage(CHAT_ID, `TESTING POST MESSAGE, ${JSON.stringify(req.body)}`)
+  bot.api.sendMessage(CHAT_ID, "https://www.tradingview.com/chart/isXDKqS6/")
 
 
   return next();

@@ -6,7 +6,7 @@
   "scripts": {
     "test": "test",
     "start": "npx tsc && node ./app/index.js",
-    "deploy": "git push heroku master"
+    "deploy": "git push heroku main"
   },
   "author": "JigJug",
   "license": "ISC",
