@@ -7,7 +7,7 @@ import { BOT_TOKEN } from "./configs/config"
 
 if(BOT_TOKEN === undefined) process.exit(".env errror");
 const bot = new Bot(BOT_TOKEN)
-let CHAT_ID = 0
+let CHAT_ID = -1002290965591
 
 
 const app = express();
@@ -45,14 +45,27 @@ app.get("/", async (req, res, next) => {
   next();
 });
 
-app.post("/botalert", async (req, res, next) => {
+app.post("/botalert/btc", async (req, res, next) => {
 
   console.log("alert!")
 
   console.log(req.body)
 
   bot.api.sendMessage(CHAT_ID, `TESTING POST MESSAGE, ${JSON.stringify(req.body)}`)
-  bot.api.sendMessage(CHAT_ID, "https://www.tradingview.com/chart/isXDKqS6/")
+  bot.api.sendMessage(CHAT_ID, "BTC ALERT - chart:\n\nhttps://www.tradingview.com/chart/isXDKqS6/?symbol=BINANCE%3ABTCUSDT\n")
+
+
+  return next();
+});
+
+app.post("/botalert/sol", async (req, res, next) => {
+
+  console.log("alert!")
+
+  console.log(req.body)
+
+  //bot.api.sendMessage(CHAT_ID, `TESTING POST MESSAGE, ${JSON.stringify(req.body)}`)
+  bot.api.sendMessage(CHAT_ID, "SOL ALERT - chart:\n\nhttps://www.tradingview.com/chart/isXDKqS6/\n")
 
 
   return next();
