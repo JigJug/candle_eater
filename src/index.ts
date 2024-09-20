@@ -65,7 +65,7 @@ app.post("/botalert/sol", async (req, res, next) => {
   console.log(req.body)
 
   //bot.api.sendMessage(CHAT_ID, `TESTING POST MESSAGE, ${JSON.stringify(req.body)}`)
-  bot.api.sendMessage(CHAT_ID, "SOL ALERT - chart:\n\nhttps://www.tradingview.com/chart/isXDKqS6/\n")
+  bot.api.sendMessage(CHAT_ID, "SOL ALERT - chart:\n\nhttps://www.tradingview.com/chart/isXDKqS6/?symbol=BINANCE%3ASOLUSDT\n")
 
 
   return next();
