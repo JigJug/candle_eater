@@ -1,0 +1,26 @@
+{
+  "name": "candle-eater",
+  "version": "0.0.1",
+  "description": "candle_eater",
+  "main": "index.js",
+  "scripts": {
+    "test": "test",
+    "start": "npx tsc && node ./app/index.js",
+    "deploy": "git push heroku master"
+  },
+  "author": "JigJug",
+  "license": "ISC",
+  "dependencies": {
+    "@types/body-parser": "^1.19.5",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.14.9",
+    "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "ethers": "^6.13.1",
+    "express": "^4.21.0",
+    "grammy": "^1.25.2",
+    "typescript": "^5.5.2"
+  }
+}
