@@ -64,7 +64,7 @@ app.post("/botalert/btc/15", async (req, res, next) => {
   console.log(req.body)
 
   
-  bot.api.sendMessage(CHAT_ID, "🔔BTC ALERT🔔\n\n🕒 15 min 🕒\n\n📈📉 chart:\n\nhttps://www.tradingview.com/chart/isXDKqS6/?symbol=BINANCE%3ABTCUSDT\n")
+  bot.api.sendMessage(CHAT_ID, "🔔BTC ALERT🔔\n\n🕒 15 min 🕒\n\n⚠️ Engulfing Candle ⚠️\n\n📈📉 chart:\n\nhttps://www.tradingview.com/chart/isXDKqS6/?symbol=BINANCE%3ABTCUSDT\n")
 
 
   return next();
