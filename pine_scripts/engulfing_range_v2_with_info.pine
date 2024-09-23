@@ -1,0 +1,65 @@
+//@version=5
+indicator("Trend Change with Alerts and Webhook", overlay=true)
+
+// User-defined input for the number of bars to show the range
+rangeLength = input.int(10, title="Range Length (Bars)")
+
+// Function to identify trend changes with the wick condition
+isBearishToBullish() =>
+    close[1] < open[1] and close > open and close > high[1] and low < low[1]  // Bullish candle with a longer lower wick than the previous candle
+
+isBullishToBearish() =>
+    close[1] > open[1] and close < open and close < low[1] and high > high[1] // Bearish candle with a longer upper wick than the previous candle
+
+// Variables to store the high and low of the trend change candle
+var float bullishRangeHigh = na
+var float bullishRangeLow = na
+var float bearishRangeHigh = na
+var float bearishRangeLow = na
+
+// Variables to track the start of the range and bar index
+var int bullishStartBar = na
+var int bearishStartBar = na
+
+// When a bullish trend change is detected (bearish candle followed by bullish with longer lower wick)
+if isBearishToBullish()
+    bullishRangeHigh := math.max(close[1], open[1])  // Use the body of the previous candle for the high
+    bullishRangeLow := low  // Set the low to the current leading candle's low
+    bullishStartBar := bar_index  // Record the starting bar index of the bullish trend change
+    
+    // Custom alert message with dynamic variables
+    alertMessage = "Bullish trend change detected! " +
+                   "Ticker: {{ticker}}, " +
+                   "Close: {{close}}, " +
+                   "High: {{high}}, " +
+                   "Low: {{low}}, " +
+                   "Time: {{time}}"
+    alert(alertMessage, alert.freq_once_per_bar_close)
+
+// When a bearish trend change is detected (bullish candle followed by bearish with longer upper wick)
+if isBullishToBearish()
+    bearishRangeHigh := math.max(close[1], open[1])  // Use the body of the previous candle for the high
+    bearishRangeLow := low  // Set the low to the current leading candle's low
+    bearishStartBar := bar_index  // Record the starting bar index of the bearish trend change
+    
+    // Custom alert message with dynamic variables
+    alertMessage = "Bearish trend change detected! " +
+                   "Ticker: {{ticker}}, " +
+                   "Close: {{close}}, " +
+                   "High: {{high}}, " +
+                   "Low: {{low}}, " +
+                   "Time: {{time}}"
+    alert(alertMessage, alert.freq_once_per_bar_close)
+
+// Plot horizontal lines for the specified number of bars (rangeLength)
+if not na(bullishStartBar) and (bar_index - bullishStartBar) <= rangeLength
+    line.new(x1=bullishStartBar, y1=bullishRangeHigh, x2=bullishStartBar + rangeLength, y2=bullishRangeHigh, color=color.green, width=2, extend=extend.none)
+    line.new(x1=bullishStartBar, y1=bullishRangeLow, x2=bullishStartBar + rangeLength, y2=bullishRangeLow, color=color.green, width=2, extend=extend.none)
+
+if not na(bearishStartBar) and (bar_index - bearishStartBar) <= rangeLength
+    line.new(x1=bearishStartBar, y1=bearishRangeHigh, x2=bearishStartBar + rangeLength, y2=bearishRangeHigh, color=color.red, width=2, extend=extend.none)
+    line.new(x1=bearishStartBar, y1=bearishRangeLow, x2=bearishStartBar + rangeLength, y2=bearishRangeLow, color=color.red, width=2, extend=extend.none)
+
+// Optional: Highlight candles
+bgcolor(not na(bullishStartBar) and (bar_index - bullishStartBar) <= rangeLength ? color.new(color.green, 85) : na, title="Bullish Change")
+bgcolor(not na(bearishStartBar) and (bar_index - bearishStartBar) <= rangeLength ? color.new(color.red, 85) : na, title="Bearish Change")
