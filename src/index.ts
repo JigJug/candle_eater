@@ -139,13 +139,13 @@ function arrangeMessage(message: string): PostInfo {
 
 function makeAlert(info: PostInfo){
   return `
-    🔔ALERT🔔\n\n
-    ${info.Ticker}\n\n
-    🕒 ${info.Timeframe} 🕒\n\n
-    ${bullishBearishAlert(info.bullishBearish)}\n
-    ⚠️ Engulfing Zone ⚠️\n
-    ${bullishBearishAlert(info.bullishBearish)}\n\n
-    📈📉chart:\n\nhttps://www.tradingview.com/chart/isXDKqS6/?symbol=${info.Exchange}%3A${info.Ticker}\n
+🔔ALERT🔔\n
+${info.Ticker}\n
+🕒 ${info.Timeframe} 🕒\n
+${bullishBearishAlert(info.bullishBearish)}
+⚠️ Engulfing Zone ⚠️
+${bullishBearishAlert(info.bullishBearish)}\n
+📈📉chart:\n\nhttps://www.tradingview.com/chart/isXDKqS6/?symbol=${info.Exchange}%3A${info.Ticker}\n
   `
 }
 
