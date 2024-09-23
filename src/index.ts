@@ -128,7 +128,7 @@ function arrangeMessage(message: string): PostInfo {
   let x: "Bullish" | "Bearish" = "Bearish";
   if (si[0] === "Bullish") x = "Bullish";
   let tf = 15;
-  if (si[3] === "1h") tf = 60;
+  if (si[3] === "Timeframe 1h") tf = 60;
   return {
     bullishBearish: x,
     high: si[1],
