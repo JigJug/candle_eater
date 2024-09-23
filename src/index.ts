@@ -8,6 +8,8 @@ import { MongoClient, Collection } from 'mongodb';
 if(BOT_TOKEN === undefined) process.exit(".env errror");
 if(MONGO_URI === undefined) process.exit(".env errror");
 
+console.log(MONGO_URI)
+
 let ALERT_DATA = null
 
 const client: MongoClient = new MongoClient(MONGO_URI);
