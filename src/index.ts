@@ -4,7 +4,7 @@ import bodyParser from "body-parser";
 import {Bot } from "grammy"
 import { BOT_TOKEN, MONGO_URI, DB_NAME, DB_COLLECTION } from "./configs/config"
 import { MongoClient, Collection } from 'mongodb';
-
+console.log(MONGO_URI)
 if(BOT_TOKEN === undefined) process.exit(".env errror");
 if(MONGO_URI === undefined) process.exit(".env errror");
 
