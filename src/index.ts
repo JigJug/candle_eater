@@ -131,8 +131,8 @@ function arrangeMessage(message: string): PostInfo {
     high: si[1],
     low: si[2],
     Timeframe: si[3],
-    Ticker: si[4],
-    Exchange: si[5],
+    Ticker: si[5],
+    Exchange: si[4],
     Time: si[6],
   }
 }
