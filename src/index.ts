@@ -117,6 +117,7 @@ interface PostInfo {
   high: string // str float 2dp
   low: string // str float 2dp
   Timeframe: string
+  tfNum: number
   Ticker: string
   Exchange: string
   Time: string //2023-09-18 14:30
@@ -124,13 +125,16 @@ interface PostInfo {
 
 function arrangeMessage(message: string): PostInfo {
   const si = message.split("\n");
-  let x: "Bullish" | "Bearish" = "Bearish"
-  if (si[0] === "Bullish") x = "Bullish"
+  let x: "Bullish" | "Bearish" = "Bearish";
+  if (si[0] === "Bullish") x = "Bullish";
+  let tf = 15;
+  if (si[3] === "1h") tf = 60;
   return {
     bullishBearish: x,
     high: si[1],
     low: si[2],
     Timeframe: si[3],
+    tfNum: tf,
     Ticker: si[5],
     Exchange: si[4],
     Time: si[6],
@@ -145,7 +149,7 @@ ${info.Ticker}\n
 ${bullishBearishAlert(info.bullishBearish)}
 ⚠️ Engulfing Zone ⚠️
 ${bullishBearishAlert(info.bullishBearish)}\n
-📈📉chart:\n\nhttps://www.tradingview.com/chart/isXDKqS6/?symbol=${info.Exchange}%3A${info.Ticker}\n
+📈📉chart:\n\nhttps://www.tradingview.com/chart/isXDKqS6/?symbol=${info.Exchange}%3A${info.Ticker}&interval=${info.tfNum}\n
   `
 }
 
