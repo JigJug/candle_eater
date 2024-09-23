@@ -37,6 +37,7 @@ async function connectToDatabase(): Promise<Collection<AlertData> | undefined> {
     return collection;
   } catch (error) {
     console.error('Error connecting to MongoDB:', error);
+    throw error
   }
 }
 
