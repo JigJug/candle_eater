@@ -1,0 +1,110 @@
+//@version=5
+indicator("Trend Change with Alerts and Webhook", overlay=true)
+
+// User-defined input for the number of bars to show the range
+rangeLength = input.int(10, title="Range Length (Bars)")
+
+// Function to identify trend changes with the wick condition
+isBearishToBullish() =>
+    close[1] < open[1] and close > open and close > high[1] and low < low[1]
+
+isBullishToBearish() =>
+    close[1] > open[1] and close < open and close < low[1] and high > high[1]
+
+// Variables to store the high and low of the trend change candle
+var float bullishRangeHigh = na
+var float bullishRangeLow = na
+var float bearishRangeHigh = na
+var float bearishRangeLow = na
+
+// Variables to track the start of the range and bar index
+var int bullishStartBar = na
+var int bearishStartBar = na
+
+// ID counters for the ranges
+var int bullishRangeID = 0
+var int bearishRangeID = 0
+
+// Get the chart's timeframe, ticker, and prefix (exchange)
+chartTimeframe = timeframe.period
+tickerInfo = syminfo.ticker
+exchangePrefix = syminfo.prefix
+alertTime = timestamp("yyyy-MM-dd HH:mm", year, month, dayofmonth, hour, minute)
+
+// When a bullish trend change is detected
+if isBearishToBullish()
+    bullishRangeHigh := math.max(close[1], open[1])
+    bullishRangeLow := low
+    bullishStartBar := bar_index
+    bullishRangeID += 1  // Increment ID for bullish range
+
+    // Custom alert message for bullish (JSON format)
+    alertMessage = json.encode({
+        "type": "Bullish",
+        "ID": bullishRangeID,
+        "High": bullishRangeHigh,
+        "Low": bullishRangeLow,
+        "Timeframe": chartTimeframe,
+        "Symbol": tickerInfo,
+        "Exchange": exchangePrefix,
+        "Time": str.tostring(time_close, "yyyy-MM-dd HH:mm")
+    })
+
+    // Webhook alert
+    alert(alertMessage, alert.freq_once_per_bar_close)
+
+// When a bearish trend change is detected
+if isBullishToBearish()
+    bearishRangeHigh := math.max(close[1], open[1])
+    bearishRangeLow := low
+    bearishStartBar := bar_index
+    bearishRangeID += 1  // Increment ID for bearish range
+
+    // Custom alert message for bearish (JSON format)
+    alertMessage = json.encode({
+        "type": "Bearish",
+        "ID": bearishRangeID,
+        "High": bearishRangeHigh,
+        "Low": bearishRangeLow,
+        "Timeframe": chartTimeframe,
+        "Symbol": tickerInfo,
+        "Exchange": exchangePrefix,
+        "Time": str.tostring(time_close, "yyyy-MM-dd HH:mm")
+    })
+
+    // Webhook alert
+    alert(alertMessage, alert.freq_once_per_bar_close)
+
+// Price alert conditions
+priceInBullishRange = close >= bullishRangeLow and close <= bullishRangeHigh
+priceInBearishRange = close >= bearishRangeLow and close <= bearishRangeHigh
+
+// Set alerts for price entering ranges
+if priceInBullishRange
+    alert(json.encode({
+        "type": "Price Entered Bullish Range",
+        "ID": bullishRangeID,
+        "Symbol": tickerInfo,
+        "Time": str.tostring(time_close, "yyyy-MM-dd HH:mm")
+    }), alert.freq_once_per_bar_close)
+
+if priceInBearishRange
+    alert(json.encode({
+        "type": "Price Entered Bearish Range",
+        "ID": bearishRangeID,
+        "Symbol": tickerInfo,
+        "Time": str.tostring(time_close, "yyyy-MM-dd HH:mm")
+    }), alert.freq_once_per_bar_close)
+
+// Plot horizontal lines for the specified number of bars (rangeLength)
+if not na(bullishStartBar) and (bar_index - bullishStartBar) <= rangeLength
+    line.new(x1=bullishStartBar, y1=bullishRangeHigh, x2=bullishStartBar + rangeLength, y2=bullishRangeHigh, color=color.green, width=2, extend=extend.none)
+    line.new(x1=bullishStartBar, y1=bullishRangeLow, x2=bullishStartBar + rangeLength, y2=bullishRangeLow, color=color.green, width=2, extend=extend.none)
+
+if not na(bearishStartBar) and (bar_index - bearishStartBar) <= rangeLength
+    line.new(x1=bearishStartBar, y1=bearishRangeHigh, x2=bearishStartBar + rangeLength, y2=bearishRangeHigh, color=color.red, width=2, extend=extend.none)
+    line.new(x1=bearishStartBar, y1=bearishRangeLow, x2=bearishStartBar + rangeLength, y2=bearishRangeLow, color=color.red, width=2, extend=extend.none)
+
+// Optional: Highlight candles
+bgcolor(not na(bullishStartBar) and (bar_index - bullishStartBar) <= rangeLength ? color.new(color.green, 85) : na, title="Bullish Change")
+bgcolor(not na(bearishStartBar) and (bar_index - bearishStartBar) <= rangeLength ? color.new(color.red, 85) : na, title="Bearish Change")
