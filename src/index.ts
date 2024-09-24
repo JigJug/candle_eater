@@ -197,6 +197,7 @@ app.post("/botalert", async (req, res, next) => {
 
   console.log(req.body.message)
 
+  if(req.body.message === undefined) {return next();}
 
   if(req.body.message.indexOf("Price entered") != -1) {return next();}
 
