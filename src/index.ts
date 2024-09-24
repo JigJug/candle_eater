@@ -1,7 +1,8 @@
 import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
-import {Bot } from "grammy"
+import {Bot, InputFile } from "grammy"
+import { getPicWithBrowser } from "./utils/getpic";
 import { BOT_TOKEN, MONGO_URI, DB_NAME, DB_COLLECTION } from "./configs/config"
 import { MongoClient, Collection } from 'mongodb';
 console.log(MONGO_URI)
@@ -215,14 +216,27 @@ app.post("/botalert", async (req, res, next) => {
   if(req.body.message.indexOf("High") == -1) {return next();}
 
   const tradeInfo = arrangeMessage(req.body.message)
+
+  const caption = makeAlert(tradeInfo)
+
+  const picBlob = await getPicWithBrowser(`https://www.tradingview.com/chart/isXDKqS6/?symbol=${tradeInfo.Exchange}%3A${tradeInfo.Ticker}&interval=${tradeInfo.tfNum}`);
+  if(picBlob != null){
+    const pic = new InputFile(picBlob, `chart_${tradeInfo.alertId}.png`)
+
+    const message = await bot.api.sendPhoto(CHAT_ID, pic, {caption})
+
+    tradeInfo.messageId = message.message_id
+
+    await saveAlertData(tradeInfo)
   
-  const message = await bot.api.sendMessage(CHAT_ID, makeAlert(tradeInfo));
+    ALL_TRADES?.push(tradeInfo)
 
-  tradeInfo.messageId = message.message_id
+  }
 
-  await saveAlertData(tradeInfo)
+  
+  //const message = await bot.api.sendMessage(CHAT_ID, makeAlert(tradeInfo));
 
-  ALL_TRADES?.push(tradeInfo)
+
 
 
   return next();
