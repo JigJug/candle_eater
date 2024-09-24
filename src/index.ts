@@ -25,7 +25,7 @@ interface TradeInfo {
   Exchange: string
   Time: string //2023-09-18 14:30
   messageId?: number
-  alertId?: number
+  alertId?: number | null
 }
 
 
@@ -140,6 +140,20 @@ function arrangeMessage(message: string): TradeInfo {
   if (si[0] === "Bullish") x = "Bullish";
   let tf = 15;
   if (si[4] === "Timeframe: 1h") tf = 60;
+
+  const getNumber = (str: string) => {
+
+    const match = str.match(/\d+/);
+
+    if (match) {
+      const id = parseInt(match[0], 10); // Convert the matched string to a number
+      return id
+    }
+
+    return null
+
+  }
+
   return {
     bullishBearish: x,
     high: si[2],
@@ -150,7 +164,7 @@ function arrangeMessage(message: string): TradeInfo {
     Exchange: si[5],
     Time: si[7],
     messageId: 0,
-    alertId: parseInt(si[1])
+    alertId: getNumber(si[1])
   }
 }
 
