@@ -201,7 +201,7 @@ app.post("/botalert", async (req, res, next) => {
 
   if(req.body.message.indexOf("Price entered") != -1) {return next();}
 
-  if(req.body.message.indexOf("High") != -1) {return next();}
+  if(req.body.message.indexOf("High") == -1) {return next();}
   
   const message = await bot.api.sendMessage(CHAT_ID, makeAlert(arrangeMessage(req.body.message)));
 
