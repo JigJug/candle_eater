@@ -65,20 +65,30 @@ export async function getPicWithBrowser(url: string): Promise<Buffer | null> {
 
       // Access the image from the clipboard using Clipboard API in the browser context
       const imageData = await page.evaluate(async () => {
+        console.log("1")
         const clipboardItems = await navigator.clipboard.read();
+        console.log("2")
         const blob = await clipboardItems[0].getType('image/png'); // Or another image format if needed
+        console.log("3")
         return new Promise((resolve) => {
+          console.log("4")
           const reader = new FileReader();
+          console.log("5")
           reader.onload = () => resolve(reader.result); // Base64 string
+          console.log("6")
           reader.readAsDataURL(blob);
         });
       });
+      console.log("7")
 
       // Type assertion to handle 'unknown' type
       if (typeof imageData === 'string') {
+        console.log("8")
         // Convert Base64 image to Buffer
         const base64Data = imageData.split(',')[1];
+        console.log("9")
         const imageBuffer = Buffer.from(base64Data, 'base64');
+        console.log("10")
         retVal = imageBuffer;
 
         // Send the image via Telegram using Grammy

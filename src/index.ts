@@ -5,11 +5,9 @@ import {Bot, InputFile } from "grammy"
 import { getPicWithBrowser } from "./utils/getpic";
 import { BOT_TOKEN, MONGO_URI, DB_NAME, DB_COLLECTION } from "./configs/config"
 import { MongoClient, Collection } from 'mongodb';
-console.log(MONGO_URI)
+
 if(BOT_TOKEN === undefined) process.exit(".env errror");
 if(MONGO_URI === undefined) process.exit(".env errror");
-
-console.log(MONGO_URI)
 
 let ALL_TRADES: null | TradeInfo[] = null
 
@@ -220,8 +218,13 @@ app.post("/botalert", async (req, res, next) => {
   const caption = makeAlert(tradeInfo)
 
   const picBlob = await getPicWithBrowser(`https://www.tradingview.com/chart/isXDKqS6/?symbol=${tradeInfo.Exchange}%3A${tradeInfo.Ticker}&interval=${tradeInfo.tfNum}`);
+
   if(picBlob != null){
+    console.log("finished grabbing piccy")
+
     const pic = new InputFile(picBlob, `chart_${tradeInfo.alertId}.png`)
+
+    console.log("got inputfile")
 
     const message = await bot.api.sendPhoto(CHAT_ID, pic, {caption})
 
