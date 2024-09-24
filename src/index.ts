@@ -146,8 +146,8 @@ function arrangeMessage(message: string): TradeInfo {
     low: si[3],
     Timeframe: si[4],
     tfNum: tf,
-    Ticker: si[5],
-    Exchange: si[6],
+    Ticker: si[6],
+    Exchange: si[5],
     Time: si[7],
     messageId: 0,
     alertId: parseInt(si[1])
