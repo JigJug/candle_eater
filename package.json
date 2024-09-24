@@ -6,7 +6,8 @@
   "scripts": {
     "test": "test",
     "start": "npx tsc && node ./app/index.js",
-    "deploy": "git push heroku main"
+    "deploy": "git push heroku main",
+    "heroku-postbuild": "mkdir ./.cache && mv /app/.cache/puppeteer ./.cache"
   },
   "author": "JigJug",
   "license": "ISC",
