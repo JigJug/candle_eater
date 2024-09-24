@@ -7,14 +7,14 @@ export async function launchBrowser(mode: boolean) {
     options = {
       headless: true,
       defaultViewport: { height: 6000, width: 1463 },
-      executablePath: '/app/.apt/usr/bin/google-chrome',
+      executablePath: '/app/.cache/puppeteer/chrome-headless-shell/linux-129.0.6668.58',
       args: ['--no-sandbox', '--disable-setuid-sandbox']
     };
   } else {
     options = {
       headless: false,
       defaultViewport: null,
-      executablePath: '/app/.apt/usr/bin/google-chrome',
+      executablePath: '/app/.cache/puppeteer/chrome/linux-129.0.6668.58',
       args: ['--no-sandbox', '--disable-setuid-sandbox']
     };
   }
