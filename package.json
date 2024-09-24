@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node ./app/index.js",
     "deploy": "git push heroku main",
-    "heroku-postbuild": "npx tsc && node node_modules/puppeteer/install.mjs && mkdir ./.cache && mv /app/.cache/puppeteer ./.cache"
+    "heroku-postbuild": "npx tsc && mkdir ./.cache && mv /app/.cache/puppeteer ./.cache"
   },
   "author": "JigJug",
   "license": "ISC",
