@@ -176,7 +176,7 @@ ${info.Ticker}\n
 ${bullishBearishAlert(info.bullishBearish)}
 ⚠️ Engulfing Zone ⚠️
 ${bullishBearishAlert(info.bullishBearish)}\n
-📈📉chart:\n\nhttps://www.tradingview.com/chart/isXDKqS6/?symbol=${info.Exchange}%3A${info.Ticker}&interval=${info.tfNum}\n
+📈📉chart:\nhttps://www.tradingview.com/chart/isXDKqS6/?symbol=${info.Exchange}%3A${info.Ticker}&interval=${info.tfNum}\n
   `
 }
 
