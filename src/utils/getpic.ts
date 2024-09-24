@@ -4,7 +4,7 @@ export async function getPicWithBrowser(url: string): Promise<Buffer | null> {
 
   let retVal = null
 
-  const {page, browser} = await launchBrowser(false)
+  const {page, browser} = await launchBrowser(true)
 
   await page.goto(url)
 
