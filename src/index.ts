@@ -193,7 +193,7 @@ app.post("/botalert", async (req, res, next) => {
 
   if(req.body.message.indexOf("BearishRange")) await bot.api.sendMessage(CHAT_ID, req.body)
 
-  if(req.body.message.indexOf("High") == -1) {return next();}
+  if(!("bullishBearish" in req.body.message)) {return next();}
 
   const tradeInfo = arrangeMessage(req.body.message)
 
