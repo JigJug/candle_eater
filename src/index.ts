@@ -196,7 +196,7 @@ loadAllAlerts().then((alerts) => {
     // Handle alerts array
     console.log(alerts);
     ALL_TRADES = alerts
-    console.log('got dababase data: ', ALL_TRADES)
+    //console.log('got dababase data: ', ALL_TRADES)
   }
 });
 
