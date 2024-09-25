@@ -55,6 +55,8 @@ export async function getPicWithBrowser(url: string){
   // Press and hold the 'Ctrl' key
   //await page.keyboard.down('Control');
 
+  await new Promise(r => setTimeout(r, 4000));
+
   // Perform double mouse scroll (scroll down twice)
   await page.mouse.wheel({ deltaY: 200 }); // Scroll downawait page.mouse.wheel({ deltaY: 200 }); // Scroll down
   await page.mouse.wheel({ deltaY: 200 }); // Scroll down
@@ -84,7 +86,7 @@ export async function getPicWithBrowser(url: string){
   // Press and hold the 'Ctrl' key
   //await page.keyboard.up('Control');
 
-  await new Promise(r => setTimeout(r, 1000));
+  await new Promise(r => setTimeout(r, 4000));
   
   // Simulate pressing Ctrl + Shift + S
   //await page.keyboard.down('Control');
@@ -152,7 +154,7 @@ export async function getPicWithBrowser(url: string){
       console.error('Failed to retrieve image data from clipboard');
   }**/
 
-
+  page.removeAllListeners();
 
   // Close the browser
   await browser.close();
