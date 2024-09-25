@@ -83,7 +83,8 @@ export async function getPicWithBrowser(url: string){
   */
 
   await page.evaluate(()=>{
-    const chartEle = document.querySelector(chartSelector);
+    const chartSelector1 = 'body > div.js-rootresizer__contents.layout-with-border-radius > div.layout__area--center > div.chart-container.single-visible.top-full-width-chart.active'
+    const chartEle = document.querySelector(chartSelector1);
     if(chartEle) chartEle.scrollBy(0, 800)
   })
 
