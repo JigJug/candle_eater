@@ -208,10 +208,15 @@ app.post("/botalert", async (req, res, next) => {
   console.log("alert!")
 
   console.log(req.body)
+  console.log(req.headers)
+  console.log(req.body.hello)
+  
+
+  res.status(200).send('Alert received'); // Respond to TradingView
 
   if(req.body.message === undefined) {return next();}
 
-  if(req.body.message.indexOf("Price entered") != -1) {return next();}
+  if(req.body.message.indexOf("BearishRange")) await bot.api.sendMessage(CHAT_ID, req.body)
 
   if(req.body.message.indexOf("High") == -1) {return next();}
 
@@ -229,11 +234,7 @@ app.post("/botalert", async (req, res, next) => {
 
     console.log("got inputfile")
 
-
-
     message = await bot.api.sendPhoto(CHAT_ID, pic, {caption})
-
-
 
   } else{
     message = await bot.api.sendMessage(CHAT_ID, caption)
