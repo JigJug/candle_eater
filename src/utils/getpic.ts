@@ -28,7 +28,7 @@ export async function getPicWithBrowser(url: string){
 
   timeaxisele?.drag({x: 300, y:0})
 
-  await new Promise(r => setTimeout(r, 1000));
+  await new Promise(r => setTimeout(r, 3000));
 
   const screenshot = await chartelement.screenshot({type:"png"})
   console.log('Screenshot saved pic ');
