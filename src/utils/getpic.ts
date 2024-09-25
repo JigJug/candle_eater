@@ -7,7 +7,7 @@ export async function getPicWithBrowser(url: string){
 
   const {page, browser} = await launchBrowser()
 
-  await page.goto(url, {waitUntil: "domcontentloaded"})
+  await page.goto(url, {waitUntil: "networkidle0"})
 
   // Block certain requests to avoid loading unnecessary popups
   await page.setRequestInterception(true);
