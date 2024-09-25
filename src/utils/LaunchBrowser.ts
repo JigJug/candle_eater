@@ -6,16 +6,26 @@ export async function launchBrowser(mode: boolean) {
   if (mode) {
     options = {
       headless: true,
-      defaultViewport: { height: 6000, width: 1463 },
+      defaultViewport: { height: 800, width: 1200 },
       executablePath: '/app/.chrome-for-testing/chrome-linux64/chrome',
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        //'--unsafely-treat-insecure-origin-as-secure=https://www.tradingview.com',  // Replace with your actual site
+        //'--enable-features=ClipboardAPI'
+      ]
     };
   } else {
     options = {
       headless: false,
       defaultViewport: null,
       executablePath: '/app/.chrome-for-testing/chrome-linux64/chrome',
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        //'--unsafely-treat-insecure-origin-as-secure=https://www.tradingview.com',  // Replace with your actual site
+        //'--enable-features=ClipboardAPI'
+      ]
     };
   }
 

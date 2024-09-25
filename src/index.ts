@@ -217,24 +217,31 @@ app.post("/botalert", async (req, res, next) => {
 
   const caption = makeAlert(tradeInfo)
 
-  const picBlob = await getPicWithBrowser(`https://www.tradingview.com/chart/isXDKqS6/?symbol=${tradeInfo.Exchange}%3A${tradeInfo.Ticker}&interval=${tradeInfo.tfNum}`);
+  const picBuffer = await getPicWithBrowser(`https://www.tradingview.com/chart/isXDKqS6/?symbol=${tradeInfo.Exchange}%3A${tradeInfo.Ticker}&interval=${tradeInfo.tfNum}`);
 
-  if(picBlob != null){
+  let message = null
+  if(picBuffer != null){
     console.log("finished grabbing piccy")
 
-    const pic = new InputFile(picBlob, `chart_${tradeInfo.alertId}.png`)
+    const pic = new InputFile(picBuffer, `chart_${tradeInfo.alertId}.png`)
 
     console.log("got inputfile")
 
-    const message = await bot.api.sendPhoto(CHAT_ID, pic, {caption})
 
-    tradeInfo.messageId = message.message_id
 
-    await saveAlertData(tradeInfo)
-  
-    ALL_TRADES?.push(tradeInfo)
+    message = await bot.api.sendPhoto(CHAT_ID, pic, {caption})
 
+
+
+  } else{
+    message = await bot.api.sendMessage(CHAT_ID, caption)
   }
+
+  tradeInfo.messageId = message.message_id
+
+  await saveAlertData(tradeInfo)
+
+  ALL_TRADES?.push(tradeInfo)
 
   
   //const message = await bot.api.sendMessage(CHAT_ID, makeAlert(tradeInfo));
