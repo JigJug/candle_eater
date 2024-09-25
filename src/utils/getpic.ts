@@ -1,3 +1,4 @@
+import { Page } from "puppeteer-core";
 import { launchBrowser } from "./LaunchBrowser";
 
 export async function getPicWithBrowser(url: string){
@@ -10,39 +11,23 @@ export async function getPicWithBrowser(url: string){
 
   // Block certain requests to avoid loading unnecessary popups
   await page.setRequestInterception(true);
-  page.on('request', (request) => {
-      // Block certain resource types
-      const blockedResources = ['image', 'stylesheet', 'font'];
-      if (blockedResources.includes(request.resourceType())) {
-          request.abort();
-      } else {
-          request.continue();
-      }
-  });
+
+  blockRequests(page)
 
   await new Promise(r => setTimeout(r, 5000));
 
 
-  await page.waitForSelector('.content-D4RPB3ZC')
-
-  const cookiesbutton = await page.$('.content-D4RPB3ZC')
-
-  if (!cookiesbutton) return null
-
-  cookiesbutton?.click()
-
+  getRidOfCookiesPopup(page);
 
   // Wait for the element to be visible
   await page.waitForSelector(chartSelector); // or use a more specific selector if necessary
 
   // Select the element
-  const element = await page.$(chartSelector);
+  const chartelement = await page.$(chartSelector);
 
-
-
-  if (!element) return null//console.log('Element has no bounding box!');
+  if (!chartelement) return null//console.log('Element has no bounding box!');
   // Get the element's bounding box (position and size)
-  const boundingBox = await element.boundingBox();
+  /*const boundingBox = await element.boundingBox();
       
   if (!boundingBox) return null//console.log('Element not found!');
   
@@ -57,7 +42,7 @@ export async function getPicWithBrowser(url: string){
   // Press and hold the 'Ctrl' key
   //await page.keyboard.down('Control');
 
-  await new Promise(r => setTimeout(r, 2000));
+  await new Promise(r => setTimeout(r, 2000));*/
 
   // Perform double mouse scroll (scroll down twice)
   /**await page.mouse.wheel({ deltaY: 200 }); // Scroll downawait page.mouse.wheel({ deltaY: 200 }); // Scroll down
@@ -82,11 +67,11 @@ export async function getPicWithBrowser(url: string){
   await page.mouse.wheel({ deltaY: 200 }); // Scroll down
   */
 
-  await page.evaluate(()=>{
+  /*await page.evaluate(()=>{
     const chartSelector1 = 'body > div.js-rootresizer__contents.layout-with-border-radius > div.layout__area--center > div.chart-container.single-visible.top-full-width-chart.active'
     const chartEle = document.querySelector(chartSelector1);
     if(chartEle) chartEle.scrollBy(0, 800)
-  })
+  })*/
 
   //await page.mouse.down()
   //await page.mouse.drag({x,y}, {x:x+300,y:0})
@@ -94,6 +79,15 @@ export async function getPicWithBrowser(url: string){
 
   // Press and hold the 'Ctrl' key
   //await page.keyboard.up('Control');
+
+  // Enable drag interception
+  //await page.setDragInterception(true);
+
+  await page.waitForSelector(".time-axis")
+
+  const timeaxisele = await page.$(".time-axis")
+
+  timeaxisele?.drag({x: 300, y:0})
 
   await new Promise(r => setTimeout(r, 4000));
   
@@ -104,7 +98,7 @@ export async function getPicWithBrowser(url: string){
   //await page.keyboard.up('Alt');
   //await page.keyboard.up('Control');
 
-  const screenshot = await element.screenshot({type:"png"})
+  const screenshot = await chartelement.screenshot({type:"png"})
   console.log('Screenshot saved pic ');
   await new Promise(r => setTimeout(r, 1000));
 
@@ -173,3 +167,27 @@ export async function getPicWithBrowser(url: string){
 
 
 };
+
+
+async function getRidOfCookiesPopup(page: Page) {
+  await page.waitForSelector('.content-D4RPB3ZC')
+
+  const cookiesbutton = await page.$('.content-D4RPB3ZC')
+
+  if (!cookiesbutton) return null
+
+  return cookiesbutton?.click()
+}
+
+
+function blockRequests(page: Page) {
+  page.on('request', (request) => {
+    // Block certain resource types
+    const blockedResources = ['image', 'stylesheet', 'font'];
+    if (blockedResources.includes(request.resourceType())) {
+      request.abort();
+    } else {
+      request.continue();
+    }
+  });
+}
