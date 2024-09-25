@@ -66,6 +66,16 @@ export async function getPicWithBrowser(url: string){
   await page.mouse.wheel({ deltaY: 200 }); // Scroll down
   await page.mouse.wheel({ deltaY: 200 }); // Scroll down
   await page.mouse.wheel({ deltaY: 200 }); // Scroll down
+  await page.mouse.wheel({ deltaY: 200 }); // Scroll down
+  await page.mouse.wheel({ deltaY: 200 }); // Scroll down
+  await page.mouse.wheel({ deltaY: 200 }); // Scroll down
+  await page.mouse.wheel({ deltaY: 200 }); // Scroll down
+  await page.mouse.wheel({ deltaY: 200 }); // Scroll down
+  await page.mouse.wheel({ deltaY: 200 }); // Scroll down
+  await page.mouse.wheel({ deltaY: 200 }); // Scroll down
+  await page.mouse.wheel({ deltaY: 200 }); // Scroll down
+  await page.mouse.wheel({ deltaY: 200 }); // Scroll down
+  await page.mouse.wheel({ deltaY: 200 }); // Scroll down
 
   //await page.mouse.down()
   //await page.mouse.drag({x,y}, {x:x+300,y:0})
