@@ -16,15 +16,15 @@ const client: MongoClient = new MongoClient(MONGO_URI);
 
 interface TradeInfo {
   bullishBearish: "Bullish" | "Bearish"
-  high: string // str float 2dp
-  low: string // str float 2dp
-  Timeframe: string
+  ID: number | null
+  High: string // str float 2dp
+  Low: string // str float 2dp
+  timeFrame: string
   tfNum: number
-  Ticker: string
-  Exchange: string
+  ticker: string
+  exchangePrefix: string
   Time: string //2023-09-18 14:30
-  messageId?: number
-  alertId?: number | null
+  messageId?: number | null
 }
 
 
@@ -133,51 +133,28 @@ app.get("/", async (req, res, next) => {
 
 
 
-function arrangeMessage(message: string): TradeInfo {
-  const si = message.split("\n");
-  let x: "Bullish" | "Bearish" = "Bearish";
-  if (si[0] === "Bullish") x = "Bullish";
+function arrangeMessage(m: TradeInfo): TradeInfo {
+
   let tf = 15;
-  if (si[4] === "Timeframe: 30m") tf = 30;
-  if (si[4] === "Timeframe: 1h") tf = 60;
-  if (si[4] === "Timeframe: 4h") tf = 240;
+  if (m.timeFrame === "Timeframe: 30m") tf = 30;
+  if (m.timeFrame === "Timeframe: 1h") tf = 60;
+  if (m.timeFrame === "Timeframe: 4h") tf = 240;
 
-  const getNumber = (str: string) => {
+  m["tfNum"] = tf
+  m["messageId"] = null
 
-    const match = str.match(/\d+/);
-
-    if (match) {
-      const id = parseInt(match[0], 10); // Convert the matched string to a number
-      return id
-    }
-
-    return null
-
-  }
-
-  return {
-    bullishBearish: x,
-    high: si[2],
-    low: si[3],
-    Timeframe: si[4],
-    tfNum: tf,
-    Ticker: si[6],
-    Exchange: si[5],
-    Time: si[7],
-    messageId: 0,
-    alertId: getNumber(si[1])
-  }
+  return m
 }
 
 function makeAlert(info: TradeInfo){
   return `
 🔔ALERT🔔\n
-${info.Ticker}\n
-🕒 ${info.Timeframe} 🕒\n
+${info.ticker}\n
+🕒 ${info.timeFrame} 🕒\n
 ${bullishBearishAlert(info.bullishBearish)}
 ⚠️ Engulfing Zone ⚠️
 ${bullishBearishAlert(info.bullishBearish)}\n
-📈📉chart:\nhttps://www.tradingview.com/chart/isXDKqS6/?symbol=${info.Exchange}%3A${info.Ticker}&interval=${info.tfNum}\n
+📈📉chart:\nhttps://www.tradingview.com/chart/isXDKqS6/?symbol=${info.exchangePrefix}%3A${info.ticker}&interval=${info.tfNum}\n
   `
 }
 
@@ -208,8 +185,6 @@ app.post("/botalert", async (req, res, next) => {
   console.log("alert!")
 
   console.log(req.body)
-  console.log(req.headers)
-  console.log(req.body.hello)
   
 
   res.status(200).send('Alert received'); // Respond to TradingView
@@ -224,13 +199,13 @@ app.post("/botalert", async (req, res, next) => {
 
   const caption = makeAlert(tradeInfo)
 
-  const picBuffer = await getPicWithBrowser(`https://www.tradingview.com/chart/isXDKqS6/?symbol=${tradeInfo.Exchange}%3A${tradeInfo.Ticker}&interval=${tradeInfo.tfNum}`);
+  const picBuffer = await getPicWithBrowser(`https://www.tradingview.com/chart/isXDKqS6/?symbol=${tradeInfo.exchangePrefix}%3A${tradeInfo.ticker}&interval=${tradeInfo.tfNum}`);
 
   let message = null
   if(picBuffer != null){
     console.log("finished grabbing piccy")
 
-    const pic = new InputFile(picBuffer, `chart_${tradeInfo.alertId}.png`)
+    const pic = new InputFile(picBuffer, `chart_${tradeInfo.ID}.png`)
 
     console.log("got inputfile")
 
