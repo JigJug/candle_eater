@@ -2,6 +2,8 @@ import { launchBrowser } from "./LaunchBrowser";
 
 export async function getPicWithBrowser(url: string){
 
+  const chartSelector = 'body > div.js-rootresizer__contents.layout-with-border-radius > div.layout__area--center > div.chart-container.single-visible.top-full-width-chart.active'
+
   const {page, browser} = await launchBrowser(true)
 
   await page.goto(url)
@@ -31,10 +33,10 @@ export async function getPicWithBrowser(url: string){
 
 
   // Wait for the element to be visible
-  await page.waitForSelector('body > div.js-rootresizer__contents.layout-with-border-radius > div.layout__area--center > div.chart-container.single-visible.top-full-width-chart.active'); // or use a more specific selector if necessary
+  await page.waitForSelector(chartSelector); // or use a more specific selector if necessary
 
   // Select the element
-  const element = await page.$('body > div.js-rootresizer__contents.layout-with-border-radius > div.layout__area--center > div.chart-container.single-visible.top-full-width-chart.active');
+  const element = await page.$(chartSelector);
 
 
 
@@ -55,10 +57,10 @@ export async function getPicWithBrowser(url: string){
   // Press and hold the 'Ctrl' key
   //await page.keyboard.down('Control');
 
-  await new Promise(r => setTimeout(r, 4000));
+  await new Promise(r => setTimeout(r, 2000));
 
   // Perform double mouse scroll (scroll down twice)
-  await page.mouse.wheel({ deltaY: 200 }); // Scroll downawait page.mouse.wheel({ deltaY: 200 }); // Scroll down
+  /**await page.mouse.wheel({ deltaY: 200 }); // Scroll downawait page.mouse.wheel({ deltaY: 200 }); // Scroll down
   await page.mouse.wheel({ deltaY: 200 }); // Scroll down
   await page.mouse.wheel({ deltaY: 200 }); // Scroll down
   await page.mouse.wheel({ deltaY: 200 }); // Scroll down
@@ -78,6 +80,12 @@ export async function getPicWithBrowser(url: string){
   await page.mouse.wheel({ deltaY: 200 }); // Scroll down
   await page.mouse.wheel({ deltaY: 200 }); // Scroll down
   await page.mouse.wheel({ deltaY: 200 }); // Scroll down
+  */
+
+  await page.evaluate(()=>{
+    const chartEle = document.querySelector(chartSelector);
+    if(chartEle) chartEle.scrollBy(0, 800)
+  })
 
   //await page.mouse.down()
   //await page.mouse.drag({x,y}, {x:x+300,y:0})
