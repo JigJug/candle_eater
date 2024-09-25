@@ -5,7 +5,7 @@ export async function getPicWithBrowser(url: string){
 
   const chartSelector = 'body > div.js-rootresizer__contents.layout-with-border-radius > div.layout__area--center > div.chart-container.single-visible.top-full-width-chart.active'
 
-  const {page, browser} = await launchBrowser(true)
+  const {page, browser} = await launchBrowser()
 
   await page.goto(url, {waitUntil: "domcontentloaded"})
 
