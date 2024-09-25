@@ -133,18 +133,7 @@ app.get("/", async (req, res, next) => {
 
 
 
-function arrangeMessage(m: TradeInfo): TradeInfo {
 
-  let tf = 15;
-  if (m.timeFrame === "Timeframe: 30m") tf = 30;
-  if (m.timeFrame === "Timeframe: 1h") tf = 60;
-  if (m.timeFrame === "Timeframe: 4h") tf = 240;
-
-  m["tfNum"] = tf
-  m["messageId"] = null
-
-  return m
-}
 
 function makeAlert(info: TradeInfo){
   return `
@@ -154,7 +143,7 @@ ${info.ticker}\n
 ${bullishBearishAlert(info.bullishBearish)}
 ⚠️ Engulfing Zone ⚠️
 ${bullishBearishAlert(info.bullishBearish)}\n
-📈📉chart:\nhttps://www.tradingview.com/chart/isXDKqS6/?symbol=${info.exchangePrefix}%3A${info.ticker}&interval=${info.tfNum}\n
+📈📉chart:\nhttps://www.tradingview.com/chart/isXDKqS6/?symbol=${info.exchangePrefix}%3A${info.ticker}&interval=${info.timeFrame}\n
   `
 }
 
@@ -195,11 +184,11 @@ app.post("/botalert", async (req, res, next) => {
 
   if(!("bullishBearish" in req.body)) {return next();}
 
-  const tradeInfo = arrangeMessage(req.body)
+  const tradeInfo = req.body//arrangeMessage(req.body)
 
   const caption = makeAlert(tradeInfo)
 
-  const picBuffer = await getPicWithBrowser(`https://www.tradingview.com/chart/isXDKqS6/?symbol=${tradeInfo.exchangePrefix}%3A${tradeInfo.ticker}&interval=${tradeInfo.tfNum}`);
+  const picBuffer = await getPicWithBrowser(`https://www.tradingview.com/chart/isXDKqS6/?symbol=${tradeInfo.exchangePrefix}%3A${tradeInfo.ticker}&interval=${tradeInfo.timeFrame}`);
 
   let message = null
   if(picBuffer != null){
@@ -215,7 +204,7 @@ app.post("/botalert", async (req, res, next) => {
     message = await bot.api.sendMessage(CHAT_ID, caption)
   }
 
-  tradeInfo.messageId = message.message_id
+  tradeInfo["messageId"] = message.message_id
 
   await saveAlertData(tradeInfo)
 
