@@ -11,7 +11,7 @@ export async function launchBrowser() {
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
-      //'--unsafely-treat-insecure-origin-as-secure=https://www.tradingview.com',  // Replace with your actual site
+      //'--unsafely-treat-insecure-origin-as-secure=https://www.tradingview.com',
       //'--enable-features=ClipboardAPI'
     ]
   }
