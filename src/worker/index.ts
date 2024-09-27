@@ -27,6 +27,12 @@ bot.on('message', (ctx) => {
   ctx.reply('helloooo');
 });
 
+bot.on('callback_query:data', async (ctx) => {
+  const data = ctx.callbackQuery.data
+  if(data == "Pin") ctx.pinChatMessage(ctx.msg?.message_id!);
+  if(data == "Delete") await ctx.deleteMessages([ctx.msg?.message_id!])
+})
+
 bot.start();
 
 
@@ -44,6 +50,17 @@ function errorCatcher(
     mongodbprocessed: () => console.error("ERROR: mongodb error saving to processed alerts")
   }
   errorLogs[errorName]();
+}
+
+const reply_markup = {
+  inline_keyboard: [
+    [
+      { text: "Pin", callback_data: "Pin" },
+      { text: "Delete", callback_data: "Delete" }
+    ]
+  ],
+  resize_keyboard: true,  // Optional: resizes the keyboard
+  one_time_keyboard: true // Optional: hides the keyboard after use
 }
 
 async function rangeHandler(alert: IAlertQueue) {
@@ -65,7 +82,7 @@ async function rangeHandler(alert: IAlertQueue) {
 
     console.log("got inputfile");
 
-    tgMessage = await bot.api.sendPhoto(CHAT_ID, pic, {caption});
+    tgMessage = await bot.api.sendPhoto(CHAT_ID, pic, {caption, reply_markup});
 
   } else{
     tgMessage = await bot.api.sendMessage(CHAT_ID, caption);
