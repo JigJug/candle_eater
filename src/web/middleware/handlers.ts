@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from "express"
 import { PORT } from "../configs/config"
 import { AlertQueue } from "../mongodb/schemas"
-import { Console } from "console";
 
 export const alertHandler = async (req: Request, res:Response, next: NextFunction) => {
 
   res.status(200).send('received');
   if(req.body === undefined) errorCatcher("bodyUndefined");
+  if(!("bullishBearish" in req.body)) errorCatcher("bodyUndefined");
 
   console.log(req.body)
 

@@ -89,6 +89,17 @@ async function rangeHandler(alert: IAlertQueue) {
 
 
 async function priceHandler(alert:IAlertQueue) {
+  const alertId = alert.ID
+  
+  try {
+    const foundAlert = await ProcessedAlert.findOne({ID: alertId})
+    bot.api.sendMessage(CHAT_ID, "price in range", {reply_to_message_id: foundAlert?.messageId})
+  } catch (error) {
+    console.error("could not find alert for price")
+  }
+
+  
+  
   await AlertQueue.deleteOne({_id: alert._id});
   console.log("price alert")
 }
