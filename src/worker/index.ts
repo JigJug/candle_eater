@@ -29,8 +29,13 @@ bot.on('message', (ctx) => {
 
 bot.on('callback_query:data', async (ctx) => {
   const data = ctx.callbackQuery.data
-  if(data == "Pin") ctx.pinChatMessage(ctx.msg?.message_id!);
-  if(data == "Delete") await ctx.deleteMessages([ctx.msg?.message_id!])
+  try {
+    if(data == "Pin") ctx.pinChatMessage(ctx.msg?.message_id!);
+    if(data == "Delete") await ctx.deleteMessages([ctx.msg?.message_id!]);
+  } catch (error) {
+    console.error(error);
+  }
+
 })
 
 bot.start();
