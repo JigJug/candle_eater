@@ -88,7 +88,8 @@ async function rangeHandler(alert: IAlertQueue) {
 }
 
 
-async function priceHandler() {
+async function priceHandler(alert:IAlertQueue) {
+  await AlertQueue.deleteOne({_id: alert._id});
   console.log("price alert")
 }
 
@@ -101,7 +102,7 @@ async function botAlertProcessor() {
 
   if(alert.type === "range") await rangeHandler(alert);
 
-  else if(alert.type === "price") await priceHandler();
+  else if(alert.type === "price") await priceHandler(alert);
 
   else errorCatcher("unexpectedData");
 
