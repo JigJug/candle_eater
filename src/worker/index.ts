@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { Bot,  } from "grammy";
+import { Bot } from "grammy";
 dotenv.config();
 import { makeAlert } from "./tgbot/tgbotmethods";
 import { getPicWithBrowser } from "./pup/getpic";
@@ -30,8 +30,9 @@ bot.on('message', (ctx) => {
 bot.on('callback_query:data', async (ctx) => {
   const data = ctx.callbackQuery.data
   try {
-    if(data == "Pin") await ctx.pinChatMessage(ctx.msg?.message_id!);
-    else if(data == "Delete") await ctx.deleteMessages([ctx.msg?.message_id!]);
+    if(data == "Pin") await ctx.pinChatMessage(ctx.msg?.message_id!)? console.log("message pinned") : console.error("failed to pin message");
+    else if(data == "Delete") await ctx.deleteMessages([ctx.msg?.message_id!])? console.log("message deleted") : console.error("failed to pin deleted");
+    
   } catch (error) {
     console.error(error);
   }
@@ -57,15 +58,23 @@ function errorCatcher(
   errorLogs[errorName]();
 }
 
-const reply_markup = {
-  inline_keyboard: [
+function makeButtons(info:TradeInfo){
+  const inline_keyboard = [
     [
       { text: "Pin", callback_data: "Pin" },
       { text: "Delete", callback_data: "Delete" }
     ]
-  ],
-  resize_keyboard: true,  // Optional: resizes the keyboard
-  one_time_keyboard: true // Optional: hides the keyboard after use
+  ]
+  info.ticker === "SOLUSDT"?
+  inline_keyboard.push([
+    { text: "Trade", callback_data: JSON.stringify(info)}
+  ])
+  :null
+  return {
+    inline_keyboard,
+    resize_keyboard: true,  // Optional: resizes the keyboard
+    one_time_keyboard: true // Optional: hides the keyboard after use
+  }
 }
 
 async function rangeHandler(alert: IAlertQueue) {
@@ -86,6 +95,8 @@ async function rangeHandler(alert: IAlertQueue) {
     const pic = new InputFile(picBuffer, `chart_${tradeInfo.ID}.png`);
 
     console.log("got inputfile");
+
+    const reply_markup = makeButtons(tradeInfo);
 
     tgMessage = await bot.api.sendPhoto(CHAT_ID, pic, {caption, reply_markup});
 
