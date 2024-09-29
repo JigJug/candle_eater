@@ -1,5 +1,5 @@
 export interface TradeInfo {
-  type: "range" | "price",
+  type: "range" | "price" | "daily",
   bullishBearish: "Bullish" | "Bearish"
   ID: string
   High: string // str float 2dp

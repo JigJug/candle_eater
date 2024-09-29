@@ -7,11 +7,17 @@ export function makeAlert(info: TradeInfo){
   ${info.ticker}\n
   🕒 ${info.timeFrame} 🕒\n
   ${bullishBearishAlert(info.bullishBearish)}
-  ⚠️ Engulfing Zone ⚠️
+  ${alertType(info.type)}
   ${bullishBearishAlert(info.bullishBearish)}\n
   📈📉chart:\n${url}\n
   `;
   return {url, caption}
+}
+
+function alertType(alertType: string){
+  if(alertType === "range") return "⚠️ Engulfing Zone ⚠️"
+  if(alertType === "daily") return "⚠️ Daily Bias ⚠️"
+  else return ""
 }
   
 function bullishBearishAlert(bullishOrBearish: "Bullish" | "Bearish"){
