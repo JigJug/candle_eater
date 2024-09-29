@@ -15,6 +15,7 @@ if(process.env.BOT_TOKEN === undefined) process.exit(".env errror");
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const bot = new Bot(BOT_TOKEN);
 const CHAT_ID = -1002290965591;
+const CHAT_ID_DAILY = -1002472723761;
 
 bot.command('start', (ctx) => {
   console.log(ctx.channelPost);
@@ -57,15 +58,24 @@ function errorCatcher(
   errorLogs[errorName]();
 }
 
-const reply_markup = {
-  inline_keyboard: [
-    [
-      { text: "Pin", callback_data: "Pin" },
-      { text: "Delete", callback_data: "Delete" }
-    ]
-  ],
-  resize_keyboard: true,  // Optional: resizes the keyboard
-  one_time_keyboard: true // Optional: hides the keyboard after use
+function tempSolTradeButton(info: TradeInfo){
+  const reply_markup = {
+    inline_keyboard: [
+      [
+        { text: "Pin", callback_data: "Pin" },
+        { text: "Delete", callback_data: "Delete" }
+      ]
+    ],
+    resize_keyboard: true,  // Optional: resizes the keyboard
+    one_time_keyboard: true // Optional: hides the keyboard after use
+  }
+  if(
+    info.type === "range"
+    && info.ticker === "SOLUSDT"
+  ){
+    reply_markup.inline_keyboard.push([{ text: "Buy", callback_data: "Buy"}]);
+  }
+  return reply_markup;
 }
 
 async function rangeHandler(alert: IAlertQueue) {
@@ -86,6 +96,8 @@ async function rangeHandler(alert: IAlertQueue) {
     const pic = new InputFile(picBuffer, `chart_${tradeInfo.ID}.png`);
 
     console.log("got inputfile");
+
+    const reply_markup = tempSolTradeButton(tradeInfo);
 
     tgMessage = await bot.api.sendPhoto(CHAT_ID, pic, {caption, reply_markup});
 
@@ -115,15 +127,60 @@ async function priceHandler(alert:IAlertQueue) {
   
   try {
     const foundAlert = await ProcessedAlert.findOne({ID: alertId})
-    bot.api.sendMessage(CHAT_ID, "price in range", {reply_to_message_id: foundAlert?.messageId})
+    if(foundAlert !== null) {
+      bot.api.sendMessage(CHAT_ID, "price in range", {reply_to_message_id: foundAlert?.messageId})
+    }
   } catch (error) {
     console.error("could not find alert for price")
   }
 
-  
-  
   await AlertQueue.deleteOne({_id: alert._id});
   console.log("price alert")
+}
+
+
+async function dailyHandler(alert: IAlertQueue) {
+
+  console.log("alert found!");
+  if(!("bullishBearish" in alert)) errorCatcher("notRangeAlert");
+
+  const tradeInfo: TradeInfo = alert.toObject();
+
+  const {url, caption} = makeAlert(tradeInfo);
+
+  const picBuffer = await getPicWithBrowser(url);
+
+  let tgMessage: Message | null = null;
+  if(picBuffer != null){
+    console.log("finished grabbing piccy");
+
+    const pic = new InputFile(picBuffer, `chart_${tradeInfo.ID}.png`);
+
+    console.log("got inputfile");
+
+    //const reply_markup = tempSolTradeButton(tradeInfo);
+
+    tgMessage = await bot.api.sendPhoto(CHAT_ID_DAILY, pic, {caption});
+
+  } else{
+    tgMessage = await bot.api.sendMessage(CHAT_ID_DAILY, caption);
+  }
+
+  tradeInfo["messageId"] = tgMessage.message_id;
+
+  try {
+    //dont need to save alert just post in channel
+
+    //const processedAlert = new ProcessedAlert(tradeInfo);
+
+    //await processedAlert.save();
+
+    await AlertQueue.deleteOne({_id: alert._id});
+    
+  } catch (error) {
+    errorCatcher("mongodbprocessed");
+  }
+
 }
 
 async function botAlertProcessor() {
@@ -136,6 +193,8 @@ async function botAlertProcessor() {
   if(alert.type === "range") await rangeHandler(alert);
 
   else if(alert.type === "price") await priceHandler(alert);
+
+  else if(alert.type === "daily") await dailyHandler(alert);
 
   else errorCatcher("unexpectedData");
 
