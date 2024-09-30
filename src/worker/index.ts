@@ -24,8 +24,17 @@ bot.command('start', (ctx) => {
   }
 });
 
-bot.on('message', (ctx) => {
-  ctx.reply('helloooo');
+bot.on('message', async (ctx) => {
+  try {
+    if(ctx.msg.chat.id === CHAT_ID) {
+      const msg = await ctx.reply('helloooo');
+      if(msg) console.log("message sent")
+    }
+    
+  } catch (error) {
+    console.error(error)
+  }
+  
 });
 
 bot.on('callback_query:data', async (ctx) => {
