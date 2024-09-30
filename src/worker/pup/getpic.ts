@@ -52,10 +52,15 @@ async function getRidOfCookiesPopup(page: Page) {
 }
 
 async function stupidSignupPopup(page: Page){
-  //stupid signup popup
-  await page.waitForSelector(".closeButton-wH0t6WRN")
-  const shittySignUpCunt = await page.$(".closeButton-wH0t6WRN")
-  shittySignUpCunt?.click()
+  try {
+    //stupid signup popup
+    await page.waitForSelector(".closeButton-wH0t6WRN", {timeout: 5000})
+    const shittySignUpCunt = await page.$(".closeButton-wH0t6WRN")
+    shittySignUpCunt?.click()
+  } catch (error) {
+    console.log("couldnt find signuppopup - skipping")
+  }
+
 }
 
 
