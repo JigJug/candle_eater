@@ -12,6 +12,7 @@ export async function getPicWithBrowser(url: string){
   // Block certain requests to avoid loading unnecessary popups
   await page.setRequestInterception(true);
   blockRequests(page)
+  await stupidSignupPopup(page)
   await getRidOfCookiesPopup(page);
 
   // Wait for the element to be visible
@@ -48,6 +49,13 @@ async function getRidOfCookiesPopup(page: Page) {
   const cookiesbutton = await page.$('.content-D4RPB3ZC')
   if (!cookiesbutton) return null
   return cookiesbutton?.click()
+}
+
+async function stupidSignupPopup(page: Page){
+  //stupid signup popup
+  await page.waitForSelector(".closeButton-wH0t6WRN")
+  const shittySignUpCunt = await page.$(".closeButton-wH0t6WRN")
+  shittySignUpCunt?.click()
 }
 
 
