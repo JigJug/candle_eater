@@ -3,9 +3,11 @@ import { launchBrowser } from "./LaunchBrowser";
 
 export async function getPicWithBrowser(url: string){
 
-  const chartSelector = 'body > div.js-rootresizer__contents.layout-with-border-radius > div.layout__area--center > div.chart-container.single-visible.top-full-width-chart.active'
+  const chartSelector = '.chart-widget'
 
   const {page, browser} = await launchBrowser()
+
+  console.log(url)
 
   await page.goto(url, {waitUntil: "networkidle2"})
 
@@ -15,13 +17,11 @@ export async function getPicWithBrowser(url: string){
   await stupidSignupPopup(page)
   await getRidOfCookiesPopup(page);
 
-  // Wait for the element to be visible
-  await page.waitForSelector(chartSelector); // or use a more specific selector if necessary
+  await page.waitForSelector(chartSelector);
 
-  // Select the element
   const chartelement = await page.$(chartSelector);
 
-  if (!chartelement) return null//console.log('Element has no bounding box!');
+  if (!chartelement) {browser.close(); return null}
 
   await page.waitForSelector(".time-axis")
 
