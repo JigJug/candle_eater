@@ -216,6 +216,7 @@ async function pollForAlerts(){
       await botAlertProcessor();
     } catch (error) {
       console.error("error processing the bot alert")
+      console.error(error)
     }
     
     await new Promise(r => setTimeout(r,5000));
