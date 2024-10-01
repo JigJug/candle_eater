@@ -2,7 +2,8 @@ import mongoose, { Schema, Document} from "mongoose";
 
 // Alert Queue Schema
 export interface IAlertQueue extends Document {
-  type: "range" | "price";
+  type: "range" | "price" | "daily";
+  chart: string;
   bullishBearish: "Bullish" | "Bearish";
   ID: string;
   High: string;
@@ -15,6 +16,7 @@ export interface IAlertQueue extends Document {
   
 const alertQueueSchema: Schema<IAlertQueue> = new Schema({
   type: { type: String, required: true },
+  chart: { type: String, required: true },
   bullishBearish: { type: String, required: true },
   ID: { type: String, required: true },
   High: { type: String, required: true },
@@ -29,7 +31,8 @@ const AlertQueue = mongoose.model<IAlertQueue>('AlertQueue', alertQueueSchema);
 
 // Processed Alerts Schema
 interface IProcessedAlert extends Document {
-  type: "range" | "price";
+  type: "range" | "price" | "daily";
+  chart: string;
   bullishBearish: "Bullish" | "Bearish";
   ID: string;
   High: string;
@@ -44,6 +47,7 @@ interface IProcessedAlert extends Document {
 
 const processedAlertSchema: Schema<IProcessedAlert> = new Schema({
   type: { type: String, required: true },
+  chart: { type: String, required: true },
   bullishBearish: { type: String, required: true },
   ID: { type: String, required: true },
   High: { type: String, required: true },

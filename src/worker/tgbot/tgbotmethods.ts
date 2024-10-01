@@ -1,7 +1,7 @@
 import { TradeInfo } from "../typings"
 
 export function makeAlert(info: TradeInfo){
-  const url = `https://www.tradingview.com/chart/isXDKqS6/?symbol=${info.exchangePrefix}%3A${info.ticker}&interval=${info.timeFrame}`;
+  const url = `https://www.tradingview.com/chart/${info.chart}/?symbol=${info.exchangePrefix}%3A${info.ticker}&interval=${info.timeFrame}`;
   const caption =   `
   🔔ALERT🔔\n
   ${info.ticker}\n

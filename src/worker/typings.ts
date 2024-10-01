@@ -1,6 +1,7 @@
 export interface TradeInfo {
-  type: "range" | "price" | "daily",
+  type: "range" | "price" | "daily" | "crypto",
   bullishBearish: "Bullish" | "Bearish"
+  chart: string
   ID: string
   High: string // str float 2dp
   Low: string // str float 2dp
