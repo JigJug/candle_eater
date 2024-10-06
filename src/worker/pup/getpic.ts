@@ -45,10 +45,14 @@ export async function getPicWithBrowser(url: string){
 
 
 async function getRidOfCookiesPopup(page: Page) {
-  await page.waitForSelector('.content-D4RPB3ZC')
-  const cookiesbutton = await page.$('.content-D4RPB3ZC')
-  if (!cookiesbutton) return null
-  return cookiesbutton?.click()
+  try {
+    await page.waitForSelector('.content-D4RPB3ZC', {timeout: 5000})
+    const cookiesbutton = await page.$('.content-D4RPB3ZC')
+    cookiesbutton?.click()
+  } catch (error) {
+    console.log("couldnt find cookie popup - skipping")
+  }
+
 }
 
 async function stupidSignupPopup(page: Page){

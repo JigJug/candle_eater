@@ -2,7 +2,7 @@ import mongoose, { Schema, Document} from "mongoose";
 
 // Alert Queue Schema
 export interface IAlertQueue extends Document {
-  type: "range" | "price" | "daily";
+  type: "range" | "price" | "daily" | "wick";
   chart: string;
   bullishBearish: "Bullish" | "Bearish";
   ID: string;
@@ -31,7 +31,7 @@ const AlertQueue = mongoose.model<IAlertQueue>('AlertQueue', alertQueueSchema);
 
 // Processed Alerts Schema
 interface IProcessedAlert extends Document {
-  type: "range" | "price" | "daily";
+  type: "range" | "price" | "daily" | "wick";
   chart: string;
   bullishBearish: "Bullish" | "Bearish";
   ID: string;
