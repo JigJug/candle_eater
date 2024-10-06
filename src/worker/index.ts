@@ -19,18 +19,15 @@ const CHAT_ID_DAILY = -1002472723761;
 
 bot.command('start', (ctx) => {
   console.log(ctx);
-  if(ctx.channelPost?.message_id){
+  if(ctx.chat.id === CHAT_ID){
     ctx.reply("working");
   }
 });
 
 bot.on('message', async (ctx) => {
-  console.log(ctx)
+  console.log(ctx.chat.id)
   try {
-    if(ctx.msg.chat.id === CHAT_ID) {
-      const msg = await ctx.reply('helloooo');
-      if(msg) console.log("message sent")
-    }
+
     
   } catch (error) {
     console.error(error)
