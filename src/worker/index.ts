@@ -18,16 +18,17 @@ const CHAT_ID = -1002290965591;
 const CHAT_ID_DAILY = -1002472723761;
 
 bot.command('start', (ctx) => {
-  console.log(ctx);
+  console.log(ctx)
+  console.log(ctx.chat.id);
   if(ctx.chat.id === CHAT_ID){
     ctx.reply("working");
   }
 });
 
 bot.on('message', async (ctx) => {
-  console.log(ctx.chat.id)
+  
   try {
-
+    console.log(ctx.chat.id)
     
   } catch (error) {
     console.error(error)
