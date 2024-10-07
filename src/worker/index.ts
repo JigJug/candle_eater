@@ -16,6 +16,7 @@ const BOT_TOKEN = process.env.BOT_TOKEN;
 const bot = new Bot(BOT_TOKEN);
 const CHAT_ID = -1002290965591;
 const CHAT_ID_DAILY = -1002472723761;
+const GROUP_CHAT_ID = -1002428107484;
 
 bot.command('start', (ctx) => {
   console.log(ctx)
@@ -98,6 +99,8 @@ async function rangeHandler(alert: IAlertQueue) {
   const picBuffer = await getPicWithBrowser(url);
 
   let tgMessage: Message | null = null;
+
+  const message_thread_id = 6;
   if(picBuffer != null){
     console.log("finished grabbing piccy");
 
@@ -107,10 +110,12 @@ async function rangeHandler(alert: IAlertQueue) {
 
     const reply_markup = tempSolTradeButton(tradeInfo);
 
-    tgMessage = await bot.api.sendPhoto(CHAT_ID, pic, {caption, reply_markup});
+    await bot.api.sendPhoto(CHAT_ID, pic, {caption, reply_markup});
+    tgMessage = await bot.api.sendPhoto(GROUP_CHAT_ID, pic, {caption, reply_markup, message_thread_id});
 
   } else{
-    tgMessage = await bot.api.sendMessage(CHAT_ID, caption);
+    await bot.api.sendMessage(CHAT_ID, caption);
+    tgMessage = await bot.api.sendMessage(GROUP_CHAT_ID, caption, {message_thread_id});
   }
 
   tradeInfo["messageId"] = tgMessage.message_id;
@@ -136,7 +141,9 @@ async function priceHandler(alert:IAlertQueue) {
   try {
     const foundAlert = await ProcessedAlert.findOne({ID: alertId})
     if(foundAlert !== null) {
-      bot.api.sendMessage(CHAT_ID, "price in range", {reply_to_message_id: foundAlert?.messageId})
+      const message_thread_id = 6;
+      await bot.api.sendMessage(GROUP_CHAT_ID, "price in range", {reply_to_message_id: foundAlert?.messageId, message_thread_id})
+      await bot.api.sendMessage(CHAT_ID, "price in range", {reply_to_message_id: foundAlert?.messageId})
     }
   } catch (error) {
     console.error("could not find alert for price")
@@ -159,6 +166,9 @@ async function dailyHandler(alert: IAlertQueue) {
   const picBuffer = await getPicWithBrowser(url);
 
   let tgMessage: Message | null = null;
+
+  const message_thread_id = 4;
+
   if(picBuffer != null){
     console.log("finished grabbing piccy");
 
@@ -168,10 +178,12 @@ async function dailyHandler(alert: IAlertQueue) {
 
     //const reply_markup = tempSolTradeButton(tradeInfo);
 
-    tgMessage = await bot.api.sendPhoto(CHAT_ID_DAILY, pic, {caption});
+    await bot.api.sendPhoto(CHAT_ID_DAILY, pic, {caption});
+    tgMessage = await bot.api.sendPhoto(GROUP_CHAT_ID, pic, {caption, message_thread_id});
 
   } else{
-    tgMessage = await bot.api.sendMessage(CHAT_ID_DAILY, caption);
+    await bot.api.sendMessage(CHAT_ID_DAILY, caption);
+    tgMessage = await bot.api.sendMessage(GROUP_CHAT_ID, caption, {message_thread_id});
   }
 
   tradeInfo["messageId"] = tgMessage.message_id;
